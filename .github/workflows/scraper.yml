@@ -1,0 +1,29 @@
+name: Job Scraper Cron Job
+
+on:
+  schedule:
+    # Runs at minute 0 past every 5th hour.
+    - cron: '0 */5 * * *'
+  workflow_dispatch: # Allows you to trigger it manually via a button for testing
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install pandas python-jobspy
+
+      - name: Run Scraper Script
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        run: python scraper.py
