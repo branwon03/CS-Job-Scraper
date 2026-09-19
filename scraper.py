@@ -50,8 +50,7 @@ for location in LOCATIONS:
                 location=location,
                 results_wanted=20,
                 hours_old=6, # Crucial: Only gets jobs from the last 6 hours to prevent duplicate emails
-                country_indeed='USA',
-                job_type=["full_time", "part_time", "internship", "contract"]
+                country_indeed='USA'
             )
             all_jobs = pd.concat([all_jobs, jobs])
         except Exception as e:
