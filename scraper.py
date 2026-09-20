@@ -49,7 +49,7 @@ for location in LOCATIONS:
                 search_term=title,
                 location=location,
                 results_wanted=20,
-                hours_old=6, # Crucial: Only gets jobs from the last 6 hours to prevent duplicate emails
+                hours_old=72, # Crucial: Only gets jobs from the last 6 hours to prevent duplicate emails
                 country_indeed='USA'
             )
             all_jobs = pd.concat([all_jobs, jobs])
