@@ -89,7 +89,7 @@ def is_valid_role(row):
     is_target = (
         any(kw in job_type for kw in TARGET_KEYWORDS) or
         any(re.search(rf'\b{kw}\b', title) for kw in TARGET_KEYWORDS) or
-        any(re.search(rf'\b{kw}\b', desc) for TARGET_KEYWORDS)
+        any(re.search(rf'\b{kw}\b', desc) for kw in TARGET_KEYWORDS)
     )
     
     return is_target
