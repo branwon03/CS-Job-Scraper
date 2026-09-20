@@ -3,6 +3,7 @@ import smtplib
 import os
 import re  # Must be added here
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from jobspy import scrape_jobs
 
 # --- 1. CONFIGURATION ---
