@@ -76,7 +76,7 @@ for location in LOCATIONS:
                 search_term=title,
                 location=location,
                 results_wanted=20,
-                hours_old=720, # Set to 30 days for this final test
+                hours_old=24# Set to 30 days for this final test
                 country_indeed='USA'
             )
             all_jobs = pd.concat([all_jobs, jobs])
