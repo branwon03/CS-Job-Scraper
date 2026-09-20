@@ -1,9 +1,9 @@
 import pandas as pd
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from jobspy import scrape_jobs
 import os
+import re  # Must be added here
+from email.mime.text import MIMEText
+from jobspy import scrape_jobs
 
 # --- 1. CONFIGURATION ---
 SENDER_EMAIL = os.environ.get("EMAIL_USER") 
