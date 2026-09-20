@@ -64,13 +64,43 @@ if all_jobs.empty:
 # Drop duplicates just in case different job boards have the same listing
 all_jobs = all_jobs.drop_duplicates(subset=['title', 'company', 'location'])
 
-# Apply the skills filter against the job description
+EXCLUDED_TITLE_WORDS = ['senior', 'sr', 'manager', 'lead', 'principal', 'staff', 'director', 'vp', 'head']
+TARGET_ROLE_TYPES = ['intern', 'internship', 'co-op', 'coop', 'part-time', 'part time', 'contract']
+
+def is_valid_role(row):
+    title = str(row.get('title', '')).lower()
+    desc = str(row.get('description', '')).lower()
+    job_type = str(row.get('job_type', '')).lower()
+
+    # 1. REJECT if the title contains senior/manager keywords
+    for word in EXCLUDED_TITLE_WORDS:
+        # \b ensures we match exact words (e.g. 'staff' doesn't accidentally match 'staffing')
+        if re.search(rf'\b{word}\b', title):
+            return False
+
+    # 2. KEEP only if it explicitly matches our target student/contract role types
+    is_target = (
+        any(kw in job_type for kw in TARGET_ROLE_TYPES) or
+        any(re.search(rf'\b{kw}\b', title) for kw in TARGET_ROLE_TYPES) or
+        any(re.search(rf'\b{kw}\b', desc) for kw in TARGET_ROLE_TYPES)
+    )
+    
+    return is_target
+
+# Apply the skills filter first (using your existing function)
 all_jobs['matches_skills'] = all_jobs['description'].apply(filter_by_skills)
 filtered_jobs = all_jobs[all_jobs['matches_skills'] == True]
 
-if filtered_jobs.empty:
-    print("No jobs matched your specific skills.")
+# Apply the new role-type filter
+filtered_jobs['is_valid_role'] = filtered_jobs.apply(is_valid_role, axis=1)
+final_jobs = filtered_jobs[filtered_jobs['is_valid_role'] == True]
+
+if final_jobs.empty:
+    print("No jobs matched your specific skills and role types.")
     exit()
+
+# Select only the columns we want to see in the email
+final_list = final_jobs[['title', 'company', 'location', 'job_url']]
 
 # --- 4. FORMATTING & SENDING EMAIL ---
 # Select only the columns we want to see in the email
