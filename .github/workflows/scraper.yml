@@ -2,16 +2,21 @@ name: Job Scraper Cron Job
 
 on:
   schedule:
-    # Runs at minute 0 past every 5th hour.
-    - cron: '0 */5 * * *'
-  workflow_dispatch: # Allows you to trigger it manually via a button for testing
+    # Changed from */5 to */6
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   run-scraper:
     runs-on: ubuntu-latest
+    
+    # Grant permissions for GitHub Actions to push the text file back to your repo
+    permissions:
+      contents: write 
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -27,3 +32,11 @@ jobs:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
         run: python scraper.py
+
+      - name: Save memory (Commit seen jobs)
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add seen_jobs.txt
+          # Only create a commit if seen_jobs.txt was actually created or modified
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update seen jobs list" && git push)

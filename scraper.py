@@ -107,7 +107,58 @@ if final_jobs.empty:
     exit()
 
 # Extract only the final, fully-filtered list for the email
-final_list = final_jobs[['title', 'company', 'location', 'job_url']]
+final_list = final_jobs[['title', 'company', 'location', 'job_url']].copy()
+
+# --- NEW: DEDUPLICATION MEMORY ---
+SEEN_FILE = "seen_jobs.txt"
+if os.path.exists(SEEN_FILE):
+    with open(SEEN_FILE, "r") as f:
+        seen_urls = set(f.read().splitlines())
+else:
+    seen_urls = set()
+
+# Filter out jobs whose URLs are already in the seen list
+final_list = final_list[~final_list['job_url'].isin(seen_urls)]
+
+if final_list.empty:
+    print("Found matching jobs, but they have all been previously sent. Exiting.")
+    exit()
+# ---------------------------------
+
+# --- 4. FORMATTING & SENDING EMAIL ---
+html_table = final_list.to_html(index=False, render_links=True, escape=False)
+html_content = f"""
+<html>
+  <body>
+    <h2>New Job Matches ({len(final_list)} found)</h2>
+    <p>Here are the jobs posted matching your skills and entry-level/intern criteria:</p>
+    {html_table}
+  </body>
+</html>
+"""
+
+msg = MIMEMultipart("alternative")
+msg["Subject"] = f"Job Alert: {len(final_list)} New Roles Found"
+msg["From"] = SENDER_EMAIL
+msg["To"] = RECEIVER_EMAIL
+msg.attach(MIMEText(html_content, "html"))
+
+try:
+    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+    server.login(SENDER_EMAIL, SENDER_PASSWORD)
+    server.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, msg.as_string())
+    server.quit()
+    print("Email sent successfully!")
+    
+    # --- NEW: SAVE TO MEMORY ---
+    with open(SEEN_FILE, "a") as f:
+        for url in final_list['job_url']:
+            f.write(f"{url}\n")
+    print("Updated seen_jobs.txt")
+    # ---------------------------
+
+except Exception as e:
+    print(f"Failed to send email: {e}")
 
 # --- 4. FORMATTING & SENDING EMAIL ---
 html_table = final_list.to_html(index=False, render_links=True, escape=False)
