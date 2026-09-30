@@ -48,20 +48,15 @@ def filter_by_skills(description):
 
 def is_valid_role(row):
     title = str(row.get('title', '')).lower()
-    desc = str(row.get('description', '')).lower()
-    job_type = str(row.get('job_type', '')).lower()
 
     # 1. REJECT instantly if the title has senior/manager keywords
     for word in EXCLUDED_TITLE_WORDS:
         if re.search(rf'\b{word}\b', title):
             return False
 
-    # 2. KEEP only if it explicitly matches our student/entry-level requirements
-    is_target = (
-        any(kw in job_type for kw in TARGET_KEYWORDS) or
-        any(re.search(rf'\b{kw}\b', title) for kw in TARGET_KEYWORDS) or
-        any(re.search(rf'\b{kw}\b', desc) for kw in TARGET_KEYWORDS)
-    )
+    # 2. KEEP only if the TITLE explicitly matches our student/entry-level requirements
+    is_target = any(re.search(rf'\b{kw}\b', title) for kw in TARGET_KEYWORDS)
+    
     return is_target
 
 # --- 2. SCRAPING DATA ---
