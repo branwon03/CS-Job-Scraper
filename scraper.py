@@ -13,9 +13,9 @@ SENDER_PASSWORD = os.environ.get("EMAIL_PASS")
 RECEIVER_EMAIL = os.environ.get("EMAIL_USER")
 
 JOB_TITLES = [
-    "software engineer", "data analyst", "software developer", "AI engineer", 
-    "Data engineer", "ML engineer", "forward deployment engineer", 
-    "fullstack engineer", "web developer"
+    "software engineer", 
+    "data analyst", 
+    "machine learning engineer"
 ]
 
 LOCATIONS = [
@@ -82,7 +82,7 @@ for location in LOCATIONS:
             all_jobs = pd.concat([all_jobs, jobs])
         except Exception as e:
             print(f"Failed to scrape {title} in {location}: {e}")
-        time.sleep(7)  # Be respectful to the server
+        time.sleep(15)  # Be respectful to the server
 
 if all_jobs.empty:
     print("No new jobs found in the specified timeframe.")
