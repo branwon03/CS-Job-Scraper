@@ -2,6 +2,7 @@ import pandas as pd
 import smtplib
 import os
 import re
+import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from jobspy import scrape_jobs
@@ -14,7 +15,7 @@ RECEIVER_EMAIL = os.environ.get("EMAIL_USER")
 JOB_TITLES = [
     "software engineer", "data analyst", "software developer", "AI engineer", 
     "Data engineer", "ML engineer", "forward deployment engineer", 
-    "frontend engineer", "backend engineer", "fullstack engineer", "web developer"
+    "fullstack engineer", "web developer"
 ]
 
 LOCATIONS = [
@@ -74,13 +75,14 @@ for location in LOCATIONS:
                 site_name=["indeed", "linkedin"],
                 search_term=title,
                 location=location,
-                results_wanted=50,
+                results_wanted=35,
                 hours_old=72, # Set to 30 days for this final test
                 country_indeed='USA'
             )
             all_jobs = pd.concat([all_jobs, jobs])
         except Exception as e:
             print(f"Failed to scrape {title} in {location}: {e}")
+        time.sleep(7)  # Be respectful to the server
 
 if all_jobs.empty:
     print("No new jobs found in the specified timeframe.")
