@@ -37,9 +37,9 @@ EXCLUDED_TITLE_WORDS = [
 
 TARGET_KEYWORDS = [
     'intern', 'internship', 'co-op', 'coop', 'part-time', 'part time', 
-    'contract', 'entry level', 'entry-level', 'junior', 'jr', 
-    'new grad', 'recent grad', 'graduate', 'student',
-    'university', 'early career'
+    'contract', 'entry level', 'entry-level', 
+    'new grad', 'recent grad', 'student',
+    'university',
 ]
 
 def filter_by_skills(description):
