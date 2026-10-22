@@ -15,10 +15,10 @@ RECEIVER_EMAIL = os.environ.get("EMAIL_USER")
 JOB_TITLES = [
     "software engineer", 
     "data analyst", 
-    "machine learning engineer"
+    "machine learning engineer",
     "frontend developer",
     "backend developer",
-    "full stack developer"
+    "full stack developer",
     "forward deployed engineer",
     "software developer",
     "AI Assisted Engineer"
@@ -167,29 +167,3 @@ try:
 except Exception as e:
     print(f"Failed to send email: {e}")
 
-# --- 4. FORMATTING & SENDING EMAIL ---
-html_table = final_list.to_html(index=False, render_links=True, escape=False)
-html_content = f"""
-<html>
-  <body>
-    <h2>New Job Matches ({len(final_list)} found)</h2>
-    <p>Here are the jobs posted matching your skills and entry-level/intern criteria:</p>
-    {html_table}
-  </body>
-</html>
-"""
-
-msg = MIMEMultipart("alternative")
-msg["Subject"] = f"Job Alert: {len(final_list)} New Roles Found"
-msg["From"] = SENDER_EMAIL
-msg["To"] = RECEIVER_EMAIL
-msg.attach(MIMEText(html_content, "html"))
-
-try:
-    server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-    server.login(SENDER_EMAIL, SENDER_PASSWORD)
-    server.sendmail(SENDER_EMAIL, RECEIVER_EMAIL, msg.as_string())
-    server.quit()
-    print("Email sent successfully!")
-except Exception as e:
-    print(f"Failed to send email: {e}")
