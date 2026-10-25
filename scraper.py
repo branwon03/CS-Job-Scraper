@@ -50,6 +50,12 @@ TARGET_DESC_KEYWORDS = [
     'internship', 'co-op', 'coop' # 'contract' removed to prevent false positives in standard job descriptions
 ]
 
+def filter_by_skills(description):
+    if pd.isna(description):
+        return False
+    desc_lower = str(description).lower()
+    return any(skill in desc_lower for skill in SKILLS)
+
 def is_valid_role(row):
     title = str(row.get('title', '')).lower()
     desc = str(row.get('description', '')).lower()
