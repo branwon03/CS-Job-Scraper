@@ -38,33 +38,35 @@ SKILLS = [
 
 EXCLUDED_TITLE_WORDS = [
     'senior', 'sr', 'manager', 'lead', 'principal', 'staff', 
-    'director', 'vp', 'head', 'architect', 'supervisor'
+    'director', 'vp', 'head', 'architect', 'supervisor',
+    'ii', 'iii', 'iv', '2', '3', '4', '5', 'mid'
 ]
 
-TARGET_KEYWORDS = [
-    'intern', 'internship', 'co-op', 'coop', 'part-time', 'part time', 
-    'contract'
+TARGET_TITLE_KEYWORDS = [
+    'intern', 'internship', 'co-op', 'coop', 'part-time', 'part time', 'contract'
 ]
 
-def filter_by_skills(description):
-    if pd.isna(description):
-        return False
-    desc_lower = str(description).lower()
-    return any(skill in desc_lower for skill in SKILLS)
+TARGET_DESC_KEYWORDS = [
+    'internship', 'co-op', 'coop' # 'contract' removed to prevent false positives in standard job descriptions
+]
 
 def is_valid_role(row):
     title = str(row.get('title', '')).lower()
     desc = str(row.get('description', '')).lower()
 
-    # 1. REJECT instantly if the title has senior/manager keywords
+    # 1. REJECT instantly if the title has senior/manager or tier keywords (II, III, 3, 4)
     for word in EXCLUDED_TITLE_WORDS:
         if re.search(rf'\b{word}\b', title):
             return False
+            
+    # 2. REJECT instantly if the description asks for 3 or more years of experience
+    if re.search(r'[3-9]\+?\s*years?', desc):
+        return False
 
-    # 2. KEEP only if the TITLE OR DESCRIPTION explicitly matches our student/entry-level requirements
+    # 3. KEEP only if the TITLE has our exact keywords, or the DESCRIPTION has safe student keywords
     is_target = (
-        any(re.search(rf'\b{kw}\b', title) for kw in TARGET_KEYWORDS) or 
-        any(re.search(rf'\b{kw}\b', desc) for kw in TARGET_KEYWORDS)
+        any(re.search(rf'\b{kw}\b', title) for kw in TARGET_TITLE_KEYWORDS) or 
+        any(re.search(rf'\b{kw}\b', desc) for kw in TARGET_DESC_KEYWORDS)
     )
     return is_target
 
