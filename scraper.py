@@ -78,7 +78,7 @@ for location in LOCATIONS:
         print(f"Scraping {title} in {location}...")
         try:
             jobs = scrape_jobs(
-                site_name=["indeed", "zip_recruiter"],
+                site_name=["indeed"],
                 search_term=title,
                 location=location,
                 results_wanted=35,
