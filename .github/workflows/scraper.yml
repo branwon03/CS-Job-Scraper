@@ -31,6 +31,7 @@ jobs:
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          PROXY_LIST: ${{ secrets.PROXY_LIST }}
         run: python scraper.py
 
       - name: Save memory (Commit seen jobs)
