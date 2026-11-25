@@ -19,7 +19,6 @@ PROXIES = [p.strip() for p in RAW_PROXIES.split(",") if p.strip()]
 JOB_TITLES = [
     "software engineer",
     "data analyst",
-    "machine learning engineer",
     "frontend developer",
     "backend developer",
     "full stack developer",
@@ -31,7 +30,14 @@ JOB_TITLES = [
 LOCATIONS = [
     "San Francisco Bay Area, CA",
     "San Jose, CA",
-    "Oakland, CA"
+    "Oakland, CA",
+    "Sunnyvale, CA",
+    "Fremont, CA",
+    "Palo Alto, CA"
+    "Mountainview, CA",
+    "Cupertino, CA",
+    "Redwood City, CA"
+    "San Mateo, CA"
 ]
 
 SKILLS = [
@@ -55,7 +61,7 @@ EXCLUDED_DESC_PHRASES = [
 ]
 
 TARGET_TITLE_KEYWORDS = [
-    'intern', 'internship', 'co-op', 'coop', 'part-time', 'part time', 'contract'
+    'intern', 'internship', 'co-op', 'coop', 'part-time', 'part time', 'contract', "early-career", "new-grad", "early career", "new grad"
 ]
 
 TARGET_DESC_KEYWORDS = [
